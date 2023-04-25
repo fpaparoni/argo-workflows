@@ -60,8 +60,8 @@ func Test_archivedWorkflowServer(t *testing.T) {
 	repo.On("ListWorkflows", "", "my-name", "my-", minStartAt, maxStartAt, labels.Requirements(nil), 2, 0).Return(wfv1.Workflows{{}}, nil)
 	repo.On("ListWorkflows", "user-ns", "", "", time.Time{}, time.Time{}, labels.Requirements(nil), 2, 0).Return(wfv1.Workflows{{}, {}}, nil)
 	repo.On("CountWorkflows", "", "my-name", "my-", minStartAt, maxStartAt, labels.Requirements(nil)).Return(int64(5), nil)
-	repo.On("GetWorkflow", "").Return(nil, nil)
-	repo.On("GetWorkflow", "my-uid").Return(&wfv1.Workflow{
+	repo.On("GetWorkflow", "", "", "").Return(nil, nil)
+	repo.On("GetWorkflow", "my-uid", "", "").Return(&wfv1.Workflow{
 		ObjectMeta: metav1.ObjectMeta{Name: "my-name"},
 		Spec: wfv1.WorkflowSpec{
 			Entrypoint: "my-entrypoint",
@@ -70,7 +70,7 @@ func Test_archivedWorkflowServer(t *testing.T) {
 			},
 		},
 	}, nil)
-	repo.On("GetWorkflow", "failed-uid").Return(&wfv1.Workflow{
+	repo.On("GetWorkflow", "failed-uid", "", "").Return(&wfv1.Workflow{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "failed-wf",
 			Labels: map[string]string{
@@ -87,7 +87,7 @@ func Test_archivedWorkflowServer(t *testing.T) {
 				"succeeded-node": {Name: "succeeded-node", StartedAt: createdTime, FinishedAt: finishedTime, Phase: wfv1.NodeSucceeded, Message: "succeeded"}},
 		},
 	}, nil)
-	repo.On("GetWorkflow", "resubmit-uid").Return(&wfv1.Workflow{
+	repo.On("GetWorkflow", "resubmit-uid", "", "").Return(&wfv1.Workflow{
 		ObjectMeta: metav1.ObjectMeta{Name: "resubmit-wf"},
 		Spec: wfv1.WorkflowSpec{
 			Entrypoint: "my-entrypoint",
